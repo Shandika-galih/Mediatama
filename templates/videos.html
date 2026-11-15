@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Video · VideoIzin{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Data Video</h1><p class="muted">File video disimpan oleh aplikasi, bukan melalui URL eksternal.</p></div><a class="button" href="{{ url_for('video_new') }}">+ Unggah video</a></div>
+<section class="card table-wrap">
+  {% if videos %}
+  <table><thead><tr><th>Video</th><th>Diunggah</th><th>Permintaan</th><th>Aksi</th></tr></thead><tbody>
+  {% for video in videos %}
+    <tr><td><strong>{{ video.title }}</strong><div class="muted description">{{ video.description }}</div></td><td>{{ video.uploaded_at[:10] }}</td><td>{{ video.request_count }}</td><td>
+      <div class="actions"><a class="button secondary" href="{{ url_for('video_edit', video_id=video.id) }}">Edit</a>
+      <form class="inline" method="post" action="{{ url_for('video_delete', video_id=video.id) }}" onsubmit="return confirm('Hapus video ini beserta semua permintaannya?')"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="danger" type="submit">Hapus</button></form></div>
+    </td></tr>
+  {% endfor %}
+  </tbody></table>
+  {% else %}<p class="muted">Belum ada video. Unggah file pertama Anda.</p>{% endif %}
+</section>
+{% endblock %}

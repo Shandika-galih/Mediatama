@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Katalog Video · VideoIzin{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Katalog Video</h1><p class="muted">Ajukan akses kepada admin untuk menonton video.</p></div></div>
+<div class="grid">
+  {% for video in videos %}
+    {% set active = video.expires_at and video.expires_at > current_time.isoformat() %}
+    <section class="card">
+      <h2>{{ video.title }}</h2>
+      <p class="muted description">{{ video.description or 'Tidak ada deskripsi.' }}</p>
+      {% if active %}
+        <p><span class="badge approved">Akses aktif</span></p>
+        <p class="muted">Berakhir {{ video.expires_at[:16].replace('T', ' ') }} UTC</p>
+        <a class="button" href="{{ url_for('watch_video', video_id=video.id) }}">Tonton video</a>
+      {% elif video.request_status == 'pending' %}
+        <p><span class="badge pending">Menunggu persetujuan admin</span></p>
+      {% else %}
+        {% if video.request_status == 'rejected' %}<p><span class="badge rejected">Permintaan sebelumnya ditolak</span></p>{% endif %}
+        {% if video.expires_at %}<p class="muted">Akses sebelumnya sudah berakhir.</p>{% endif %}
+        <form method="post" action="{{ url_for('request_access', video_id=video.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <label for="message-{{ video.id }}">Pesan (opsional)</label>
+          <textarea id="message-{{ video.id }}" name="message" rows="2" placeholder="Tuliskan alasan permintaan"></textarea>
+          <p><button type="submit">Minta akses</button></p>
+        </form>
+      {% endif %}
+    </section>
+  {% else %}
+    <section class="card"><p class="muted">Belum ada video yang tersedia.</p></section>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Permintaan Akses · VideoIzin{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Permintaan Akses Video</h1><p class="muted">Tetapkan lama akses dalam jam. Akses dimulai saat permintaan disetujui.</p></div></div>
+<section class="card table-wrap">
+  {% if requests_list %}
+  <table><thead><tr><th>Customer / Video</th><th>Permintaan</th><th>Status / Masa akses</th><th>Tindakan</th></tr></thead><tbody>
+  {% for item in requests_list %}
+    <tr>
+      <td><strong>{{ item.customer_name }}</strong><div class="muted">{{ item.email }}</div><div style="margin-top:5px">{{ item.video_title }}</div></td>
+      <td>{{ item.requested_at[:16].replace('T', ' ') }} UTC{% if item.message %}<div class="muted description">{{ item.message }}</div>{% endif %}</td>
+      <td><span class="badge {{ item.status }}">{{ {'pending':'Menunggu','approved':'Disetujui','rejected':'Ditolak'}[item.status] }}</span>
+        {% if item.expires_at %}<div class="muted" style="margin-top:6px">Berakhir {{ item.expires_at[:16].replace('T', ' ') }} UTC</div>{% endif %}
+      </td>
+      <td>{% if item.status == 'pending' %}
+        <form method="post" action="{{ url_for('review_request', request_id=item.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <label for="hours-{{ item.id }}">Durasi (jam)</label><input class="inline-input" id="hours-{{ item.id }}" name="hours" type="number" min="0.01" max="8760" step="any" value="24" required>
+          <div class="actions" style="margin-top:8px"><button name="decision" value="approve">Setujui</button><button class="danger" name="decision" value="reject">Tolak</button></div>
+        </form>
+      {% else %}<span class="muted">Sudah ditinjau</span>{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody></table>
+  {% else %}<p class="muted">Belum ada permintaan akses.</p>{% endif %}
+</section>
+{% endblock %}

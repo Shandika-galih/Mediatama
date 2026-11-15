@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if video else 'Unggah' }} Video · VideoIzin{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{{ 'Edit' if video else 'Unggah' }} Video</h1><p class="muted">Pilih file video dari perangkat. Maksimal 500 MB; MP4, WebM, MOV, atau M4V.</p></div></div>
+<section class="card">
+  <form method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label for="title">Judul</label><input id="title" name="title" required value="{{ video.title if video else '' }}">
+    <label for="description">Deskripsi</label><textarea id="description" name="description">{{ video.description if video else '' }}</textarea>
+    <label for="video">File video {% if video %}(kosongkan jika tidak diganti){% endif %}</label>
+    <input id="video" name="video" type="file" accept="video/mp4,video/webm,video/quicktime,video/x-m4v" {% if not video %}required{% endif %}>
+    <div class="actions" style="margin-top:20px"><button type="submit">Simpan</button><a class="button secondary" href="{{ url_for('admin_videos') }}">Batal</a></div>
+  </form>
+</section>
+{% endblock %}

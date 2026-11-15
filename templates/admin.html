@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Admin · VideoIzin{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Dashboard Admin</h1><p class="muted">Kelola customer, video, dan persetujuan akses.</p></div></div>
+<div class="grid">
+  <section class="card"><div class="muted">Customer</div><div class="stat">{{ stats.customers }}</div><a href="{{ url_for('admin_customers') }}">Kelola customer →</a></section>
+  <section class="card"><div class="muted">Video</div><div class="stat">{{ stats.videos }}</div><a href="{{ url_for('admin_videos') }}">Kelola video →</a></section>
+  <section class="card"><div class="muted">Menunggu persetujuan</div><div class="stat">{{ stats.pending }}</div><a href="{{ url_for('admin_requests') }}">Tinjau permintaan →</a></section>
+</div>
+{% endblock %}

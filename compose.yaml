@@ -1,0 +1,19 @@
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      SECRET_KEY: ${SECRET_KEY:-please-change-this-secret-key}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin12345}
+      DATABASE_PATH: /app/data/app.db
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - app_data:/app/data
+      - video_uploads:/app/uploads
+    restart: unless-stopped
+
+volumes:
+  app_data:
+  video_uploads:

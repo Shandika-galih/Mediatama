@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Customer · VideoIzin{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Data Customer</h1><p class="muted">Buat dan kelola akun customer.</p></div><a class="button" href="{{ url_for('customer_new') }}">+ Tambah customer</a></div>
+<section class="card table-wrap">
+  {% if customers %}
+  <table><thead><tr><th>Nama</th><th>Email</th><th>Dibuat</th><th>Aksi</th></tr></thead><tbody>
+  {% for customer in customers %}
+    <tr><td>{{ customer.name }}</td><td>{{ customer.email }}</td><td>{{ customer.created_at[:10] }}</td><td>
+      <div class="actions"><a class="button secondary" href="{{ url_for('customer_edit', user_id=customer.id) }}">Edit</a>
+      <form class="inline" method="post" action="{{ url_for('customer_delete', user_id=customer.id) }}" onsubmit="return confirm('Hapus customer ini beserta permintaan aksesnya?')"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="danger" type="submit">Hapus</button></form></div>
+    </td></tr>
+  {% endfor %}
+  </tbody></table>
+  {% else %}<p class="muted">Belum ada customer.</p>{% endif %}
+</section>
+{% endblock %}
